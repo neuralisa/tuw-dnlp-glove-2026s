@@ -1,0 +1,124 @@
+# TUW DNLP GloVe Visualizer
+
+Small Python project for the TU Wien DNLP lecture on GloVe and distributional semantics.
+
+This repo turns the web lecture ideas into a local, hackable Python tool. Students can:
+
+- inspect nearest neighbors for a word
+- compare cosine similarity between two words
+- run analogy arithmetic such as `king - man + woman`
+- plot a small 2D local neighborhood around a query
+
+The project downloads the GloVe vectors from Hugging Face on first use, so students do not need to manually manage the embedding file.
+
+## What This Repo Covers
+
+The CLI mirrors the main interactions from the lecture visualizer:
+
+1. `neighbors`
+2. `similarity`
+3. `analogy`
+4. optional local neighborhood plot
+
+The goal is not to hide the implementation. The code is deliberately short and commented so students can connect the math to the actual vector operations.
+
+## Setup
+
+```bash
+git clone git@github.com:neuralisa/tuw-dnlp-glove-2026s.git
+cd tuw-dnlp-glove-2026s
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+pip install -e .
+```
+
+## First Run
+
+This downloads `glove.6B.100d.txt` from Hugging Face into `~/.cache/huggingface/` unless you pass a local file path.
+
+```bash
+python glove_visualizer.py neighbors king
+```
+
+Example output:
+
+```text
+ 1. prince               cosine=0.7434
+ 2. queen                cosine=0.7391
+ 3. son                  cosine=0.7174
+```
+
+## Commands
+
+### 1. Nearest neighbors
+
+```bash
+python glove_visualizer.py neighbors vienna --top-k 8
+```
+
+### 2. Cosine similarity
+
+```bash
+python glove_visualizer.py similarity teacher student
+```
+
+### 3. Analogy arithmetic
+
+```bash
+python glove_visualizer.py analogy king man woman --top-k 8
+```
+
+### 4. Save a local neighborhood plot
+
+```bash
+python glove_visualizer.py analogy king man woman --plot king_analogy.png
+```
+
+## Use Your Own Local File
+
+If you already have the embedding file locally:
+
+```bash
+python glove_visualizer.py --glove-path /path/to/glove.6B.100d.txt neighbors paris
+```
+
+## Why Hugging Face
+
+The repo uses `huggingface_hub` so students can fetch the embedding file with one command-driven workflow, similar to how the NER task repo uses external data instead of checking large assets directly into git.
+
+Default source:
+
+- repo id: `stanfordnlp/glove`
+- file: `glove.6B.100d.txt`
+
+If that source changes, the repo supports overriding the HF repo id and filename from the CLI.
+
+## Project Layout
+
+```text
+glove_visualizer.py        CLI entry point
+src/tuw_dnlp_glove/
+  core.py                  loading, similarity, analogy, PCA plotting helpers
+  hf_data.py               Hugging Face download helper
+  cli.py                   argument parsing + user-facing command flow
+```
+
+## Teaching Notes
+
+The most useful entry points for students are:
+
+- `neighbors("paris")` to see semantic neighborhoods
+- `similarity("teacher", "student")` to interpret cosine similarity
+- `analogy("king", "man", "woman")` to see vector arithmetic
+
+The code makes the central operations explicit:
+
+- normalize vectors
+- compare with cosine similarity
+- compose analogy vectors by addition and subtraction
+- retrieve top neighbors
+
+## License
+
+This repo is intended for TU Wien teaching use. Add a formal license if you want to distribute it beyond the course context.

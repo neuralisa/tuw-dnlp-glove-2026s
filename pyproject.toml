@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tuw-dnlp-glove"
+version = "0.1.0"
+description = "Standalone GloVe visualizer for TU Wien DNLP teaching"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "huggingface_hub>=0.30.0",
+  "matplotlib>=3.8.0",
+  "numpy>=1.26.0",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

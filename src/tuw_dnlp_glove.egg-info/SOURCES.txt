@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+src/tuw_dnlp_glove/__init__.py
+src/tuw_dnlp_glove/cli.py
+src/tuw_dnlp_glove/core.py
+src/tuw_dnlp_glove/hf_data.py
+src/tuw_dnlp_glove.egg-info/PKG-INFO
+src/tuw_dnlp_glove.egg-info/SOURCES.txt
+src/tuw_dnlp_glove.egg-info/dependency_links.txt
+src/tuw_dnlp_glove.egg-info/requires.txt
+src/tuw_dnlp_glove.egg-info/top_level.txt
