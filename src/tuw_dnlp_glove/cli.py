@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 from .core import GloveIndex, analogy_vector, cosine_similarity, save_plot
-from .hf_data import DEFAULT_HF_FILENAME, DEFAULT_HF_REPO_ID, resolve_glove_path
+from .hf_data import GLOVE_URL, resolve_glove_path
 
 
 def parse_args() -> argparse.Namespace:
@@ -12,8 +12,7 @@ def parse_args() -> argparse.Namespace:
         description="Standalone GloVe visualizer for TU Wien DNLP teaching"
     )
     parser.add_argument("--glove-path", help="optional local path to glove.6B.100d.txt")
-    parser.add_argument("--hf-repo-id", default=DEFAULT_HF_REPO_ID)
-    parser.add_argument("--hf-filename", default=DEFAULT_HF_FILENAME)
+    parser.add_argument("--glove-url", default=GLOVE_URL)
     parser.add_argument("--top-k", type=int, default=10)
 
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -48,8 +47,7 @@ def main() -> None:
     args = parse_args()
     glove_path = resolve_glove_path(
         args.glove_path,
-        repo_id=args.hf_repo_id,
-        filename=args.hf_filename,
+        url=args.glove_url,
     )
     print(f"\nUsing GloVe file: {glove_path}\n")
     index = GloveIndex.load(glove_path)

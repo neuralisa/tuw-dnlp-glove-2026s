@@ -1,27 +1,23 @@
 from __future__ import annotations
 
+import gzip
+import shutil
+import urllib.request
 from pathlib import Path
 
-from huggingface_hub import hf_hub_download
+
+GLOVE_URL = "https://huggingface.co/datasets/SLU-CSCI4750/glove.6B.100d.txt/resolve/main/glove.6B.100d.txt.gz"
+DEFAULT_CACHE_DIR = Path.home() / ".cache" / "tuw_dnlp_glove"
+DEFAULT_FILENAME = "glove.6B.100d.txt.gz"
 
 
-DEFAULT_HF_REPO_ID = "stanfordnlp/glove"
-DEFAULT_HF_FILENAME = "glove.6B.100d.txt"
-DEFAULT_HF_REPO_TYPE = "dataset"
-
-
-def resolve_glove_path(
-    local_path: str | None,
-    *,
-    repo_id: str = DEFAULT_HF_REPO_ID,
-    filename: str = DEFAULT_HF_FILENAME,
-    repo_type: str = DEFAULT_HF_REPO_TYPE,
-) -> Path:
+def resolve_glove_path(local_path: str | None, *, url: str = GLOVE_URL) -> Path:
     """
-    Return a local path to the GloVe file.
+    Return a local path to the decompressed GloVe file.
 
-    If the user supplied a local file, use it directly.
-    Otherwise download from Hugging Face and return the cached path.
+    If the user provides a local file, use it directly.
+    Otherwise download the compressed file from Hugging Face and unpack it into
+    a local cache directory.
     """
     if local_path:
         path = Path(local_path).expanduser().resolve()
@@ -29,9 +25,15 @@ def resolve_glove_path(
             raise FileNotFoundError(f"local GloVe file not found: {path}")
         return path
 
-    downloaded = hf_hub_download(
-        repo_id=repo_id,
-        filename=filename,
-        repo_type=repo_type,
-    )
-    return Path(downloaded)
+    DEFAULT_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    gz_path = DEFAULT_CACHE_DIR / DEFAULT_FILENAME
+    txt_path = DEFAULT_CACHE_DIR / "glove.6B.100d.txt"
+
+    if not gz_path.exists():
+        urllib.request.urlretrieve(url, gz_path)
+
+    if not txt_path.exists():
+        with gzip.open(gz_path, "rb") as src, txt_path.open("wb") as dst:
+            shutil.copyfileobj(src, dst)
+
+    return txt_path

@@ -2,7 +2,7 @@
 
 Small Python project for the TU Wien DNLP lecture on GloVe and distributional semantics.
 
-This repo turns the web lecture ideas into a local, hackable Python tool. Students can:
+This repo turns the lecture content into a local, hackable Python tool. Students can:
 
 - inspect nearest neighbors for a word
 - compare cosine similarity between two words
@@ -35,7 +35,7 @@ pip install -e .
 
 ## First Run
 
-This downloads `glove.6B.100d.txt` from Hugging Face into `~/.cache/huggingface/` unless you pass a local file path.
+This downloads `glove.6B.100d.txt.gz` from Hugging Face into a local cache and unpacks it automatically, unless you pass a local file path.
 
 ```bash
 python glove_visualizer.py neighbors king
@@ -83,16 +83,13 @@ If you already have the embedding file locally:
 python glove_visualizer.py --glove-path /path/to/glove.6B.100d.txt neighbors paris
 ```
 
-## Why Hugging Face
+## Data Source
 
-The repo uses `huggingface_hub` so students can fetch the embedding file with one command-driven workflow, similar to how the NER task repo uses external data instead of checking large assets directly into git.
+The default download source is:
 
-Default source:
+- `https://huggingface.co/datasets/SLU-CSCI4750/glove.6B.100d.txt/resolve/main/glove.6B.100d.txt.gz`
 
-- repo id: `stanfordnlp/glove`
-- file: `glove.6B.100d.txt`
-
-If that source changes, the repo supports overriding the HF repo id and filename from the CLI.
+If you prefer, you can pass your own local file with `--glove-path` or your own remote file with `--glove-url`.
 
 ## Project Layout
 
@@ -100,7 +97,7 @@ If that source changes, the repo supports overriding the HF repo id and filename
 glove_visualizer.py        CLI entry point
 src/tuw_dnlp_glove/
   core.py                  loading, similarity, analogy, PCA plotting helpers
-  hf_data.py               Hugging Face download helper
+  hf_data.py               download helper for the GloVe file
   cli.py                   argument parsing + user-facing command flow
 ```
 
@@ -118,7 +115,3 @@ The code makes the central operations explicit:
 - compare with cosine similarity
 - compose analogy vectors by addition and subtraction
 - retrieve top neighbors
-
-## License
-
-This repo is intended for TU Wien teaching use. Add a formal license if you want to distribute it beyond the course context.
